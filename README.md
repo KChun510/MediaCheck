@@ -18,10 +18,12 @@ To use **MediaCheck**, make sure you have the following dependencies installed:
    cd media-check
 
 ## Usage
+1. Place your Gemini API key in a .env file, at the root.
+   - [Get Key Here](https://aistudio.google.com/app/apikey)
 
-1. Open `mediaCheck.ts` in your preferred code editor.
+2. Open `mediaCheck.ts` in your preferred code editor.
 
-2. Edit the string parameters inside the `input` object:
+3. Edit the string parameters inside the `input` object:
    - `filePath`: Specify the path to the video file you want to check (e.g., `'path/to/video.mp4'`).
    - `invalidParam`: Optionally set any additional parameters (this has a default value if not provided).
 
