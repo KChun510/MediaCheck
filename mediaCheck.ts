@@ -65,10 +65,10 @@ const paramForBadVideo = `
 3) If whithin the video content, you notice a game menu for a long period.
 `
 
-export async function main(input: { filePath: string, invalidParam: string } = { filePath: "test.mp4", invalidParam: paramForBadVideo }) {
-	const uploadResponse = await uploadFile(input.filePath)
+export async function main(input: { filePath?: string, invalidParam?: string } = { filePath: "test.mp4", invalidParam: paramForBadVideo }) {
+	const uploadResponse = await uploadFile(input.filePath ?? "")
 	await checkFileState(uploadResponse.file.name)
-	console.log(await evalVideo(uploadResponse, input.invalidParam))
+	console.log(await evalVideo(uploadResponse, input.invalidParam ?? ""))
 }
 
 
