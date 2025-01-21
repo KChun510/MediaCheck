@@ -86,7 +86,7 @@ export async function main(input: { filePath?: string, invalidParam?: string } =
 const itDramaBad = "/mnt/md0/work_station/content_for_system/ITDrama/prod_vids/single_vid_plus_reddit/sho3kd-P2001.mp4"
 const tellTaleBad = "/mnt/md0/work_station/content_for_system/tellTale/prod_vids/single_vid_plus_reddit/1652hm8000.mp4"
 
-main({ filePath: itDramaBad })
+main({ filePath: tellTaleBad })
 
 
 
