@@ -42,8 +42,12 @@ const checkFileState = async (name: any) => {
 	console.log(`File ${file.displayName} is ready for inference as ${file.uri}`)
 	return file
 }
-
+/*  Task we need to feed the reasoning from output 1, to another call. On the reasoning itself. */
 const evalVideo = async (uploadResponse: any, invalidParams: string) => {
+	const defaultText = `You job is to decide if the video breaks any of the parameters given. Here are the Parameters: ${invalidParams}. 
+		Only respond with a single word, If any parameter is broken return "false" , else return "true". 
+		`
+
 	return (await model.generateContent([
 		{
 			fileData: {
@@ -52,24 +56,28 @@ const evalVideo = async (uploadResponse: any, invalidParams: string) => {
 			}
 		},
 		{
-			text: `You job is to tell me if these parameters given for a "quality" video has been broken: ${invalidParams}. 
-		Return a sinlge word and nothing else.
-		If any parameter is broken return "true" , else return "false".
-		` },
+			text: defaultText
+		},
 	])).response.text()
 }
 
 const paramForBadVideo = `
-1) If there are long momenets of silence.
-2) If any of the audio is to extreme, i.e: The talk of death.
-3) If whithin the video content, you notice a game menu for a long period.
+1) If anypop-up or add appears.
+2) If visual gameplay is not fast-paced combat or intense physical movement, then the parameters are violated.
+3) If any of the audio is to extreme, i.e: The talk of death.
 `
 
 export async function main(input: { filePath?: string, invalidParam?: string } = { filePath: "test.mp4", invalidParam: paramForBadVideo }) {
+
+	const invalidParam = input.invalidParam ?? paramForBadVideo;
 	const uploadResponse = await uploadFile(input.filePath ?? "")
 	await checkFileState(uploadResponse.file.name)
-	console.log(await evalVideo(uploadResponse, input.invalidParam ?? ""))
+	console.log(await evalVideo(uploadResponse, invalidParam))
 }
+const itDramaBad = "/mnt/md0/work_station/content_for_system/ITDrama/prod_vids/single_vid_plus_reddit/sho3kd-P2001.mp4"
+const tellTaleBad = "/mnt/md0/work_station/content_for_system/tellTale/prod_vids/single_vid_plus_reddit/1652hm8000.mp4"
+
+main({ filePath: itDramaBad })
 
 
 
