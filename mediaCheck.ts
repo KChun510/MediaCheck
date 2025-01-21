@@ -44,11 +44,10 @@ const checkFileState = async (name: any) => {
 }
 /*  Task we need to feed the reasoning from output 1, to another call. On the reasoning itself. */
 const evalVideo = async (uploadResponse: any, invalidParams: string) => {
-	const defaultText = `You job is to decide if the video breaks any of the parameters given. Here are the Parameters: ${invalidParams}. 
-		Only respond with a single word, If any parameter is broken return "false" , else return "true". 
-		`
+	const defaultText = `You job is to decide if the video breaks any of the parameters given. Here are the Parameters: ${invalidParams}. Apply reasoning on why the input, either violates or doens't violate the params.
+	`
 
-	return (await model.generateContent([
+	const videoAnalysisRes = (await model.generateContent([
 		{
 			fileData: {
 				mimeType: uploadResponse.file.mimeType,
@@ -59,6 +58,16 @@ const evalVideo = async (uploadResponse: any, invalidParams: string) => {
 			text: defaultText
 		},
 	])).response.text()
+
+	const prompt2 = `Your job is to decide if a parameter was broken based on this text: 
+	${videoAnalysisRes}.
+	Only respond with a single word, If any parameter is broken return "false" , else return "true". 
+	`
+
+	const conclusionFromAnalysis = (await model.generateContent(prompt2)).response.text()
+
+	return conclusionFromAnalysis
+
 }
 
 const paramForBadVideo = `
