@@ -30,7 +30,7 @@ const checkFileState = async (name: any) => {
 	while (file.state === FileState.PROCESSING) {
 		process.stdout.write(".")
 		// Sleep for 10 seconds
-		await new Promise((resolve) => setTimeout(resolve, 5_000))
+		await new Promise((resolve) => setTimeout(resolve, 7_000))
 		// Fetch the file from the API again
 		file = await fileManager.getFile(name)
 	}
@@ -88,17 +88,17 @@ function select_vid(): { file_name: string, type: string } {
 	const state = getRandomInt(0, 5)
 	switch (state) {
 		case 0:
-			return { file_name: "/home/toastycommand/Downloads/sho3kd-P2001.mp4", type: "Bad" }
+			return { file_name: "/mnt/md0/work_station/content_for_system/ITDrama/prod_vids/single_vid_plus_reddit/sho3kd-P2001.mp4", type: "Bad" }
 		case 1:
-			return { file_name: "/home/toastycommand/Downloads/1837bm4000.mp4", type: "Good" }
+			return { file_name: "/mnt/md0/work_station/content_for_system/tellTale/prod_vids/single_vid_plus_reddit/1837bm4000.mp4", type: "Good" }
 		case 2:
-			return { file_name: "/home/toastycommand/Downloads/1652hm8000.mp4", type: "Bad" }
+			return { file_name: "/mnt/md0/work_station/content_for_system/tellTale/prod_vids/single_vid_plus_reddit/1652hm8000.mp4", type: "Bad" }
 		case 3:
-			return { file_name: "/home/toastycommand/Downloads/1f2nziz000.mp4", type: "Good" }
+			return { file_name: "/mnt/md0/work_station/content_for_system/tellTale/prod_vids/single_vid_plus_reddit/1f2nziz000.mp4", type: "Good" }
 		case 4:
-			return { file_name: "/home/toastycommand/Downloads/1h2mg3t000.mp4", type: "Bad" }
+			return { file_name: "/mnt/md0/work_station/content_for_system/tellTale/prod_vids/single_vid_plus_reddit/1h2mg3t000.mp4", type: "Bad" }
 		case 5:
-			return { file_name: "/home/toastycommand/Desktop/content_for_system/test_twitch/prod_vids/video_plus_sub/SmokyImpartialChoughTakeNRG-Vd_4OM_q_eTeSUPQ000.mp4", type: "Good" }
+			return { file_name: "/mnt/md0/work_station/content_for_system/famous.twitch.collection/prod_vids/video_plus_sub/SmokyImpartialChoughTakeNRG-Vd_4OM_q_eTeSUPQ000.mp4", type: "Good" }
 	}
 	return { file_name: "", type: "null" }
 }

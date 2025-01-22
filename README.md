@@ -1,6 +1,22 @@
-# MediaCheck
+# MediaCheck (Benchmark Branch)
 
 **MediaCheck** is a tool that uses Google Gemini to analyze video content for quality and compliance, ensuring it meets guidelines and is free from errors before publishing.
+
+## Benchmark Results
+   1/21/25
+   ```js
+   [
+     { res: 'true', truth: 'Good' },
+     { res: 'false', truth: 'Bad' },
+                  ...
+                  ...
+     { res: 'false', truth: 'Good' },
+     { res: 'false', truth: 'Bad' },
+     { res: 'false', truth: 'Bad' }
+   ]
+   correct: 78, incorrect: 22
+   Accuracy: 0.78
+
 
 ## Dependencies
 
