@@ -24,6 +24,21 @@ const listUploadedFiles = async () => {
 	return await fileManager.listFiles()
 }
 
+const deleteAllUpload = async () => {
+	let fileListRes = (await listUploadedFiles()).files
+	let fileListLen = fileListRes.length
+	while (fileListLen > 0) {
+		for (const file of fileListRes) {
+			console.log(`File deleted: ${file.name}`)
+			await deleteFile(file)
+			await new Promise((resolve) => setTimeout(resolve, 1_000))
+
+		}
+		fileListRes = (await listUploadedFiles()).files
+		fileListLen = fileListRes.length
+	}
+}
+
 const checkFileState = async (name: any) => {
 	// Poll getFile() on a set interval (10 seconds here) to check file state.
 	let file = await fileManager.getFile(name);
@@ -71,21 +86,33 @@ const evalVideo = async (uploadResponse: any, invalidParams: string) => {
 
 }
 
-const paramForBadVideo = `
-1) If there appears to be a video intro, for example theres one video that transitions into the main content, excluding overlayed text.
-2) If the video does not show people (fictional or non-fictional) or has many still frames exluding text.
-3) If a you-tube looking pop-up appears.
-4) If any of the audio is to extreme, i.e: The talk of death.
-`
 function getRandomInt(min: number, max: number) {
 	min = Math.ceil(min);
 	max = Math.floor(max);
 	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-
-function select_vid(): { file_name: string, type: string } {
+function select_vid_thinkpad(file_num: number | null = null): { file_name: string, type: string } {
 	const state = getRandomInt(0, 5)
+	switch (state) {
+		case 0:
+			return { file_name: "/home/toastycommand/Downloads/sho3kd-P2001.mp4", type: "Bad" }
+		case 1:
+			return { file_name: "/home/toastycommand/Downloads/1837bm4000.mp4", type: "Good" }
+		case 2:
+			return { file_name: "/home/toastycommand/Downloads/1652hm8000.mp4", type: "Bad" }
+		case 3:
+			return { file_name: "/home/toastycommand/Downloads/1f2nziz000.mp4", type: "Good" }
+		case 4:
+			return { file_name: "/home/toastycommand/Downloads/1h2mg3t000.mp4", type: "Bad" }
+		case 5:
+			return { file_name: "/home/toastycommand/Desktop/content_for_system/test_twitch/prod_vids/video_plus_sub/SmokyImpartialChoughTakeNRG-Vd_4OM_q_eTeSUPQ000.mp4", type: "Good" }
+	}
+	return { file_name: "", type: "null" }
+}
+
+function select_vid(file_num: number | null = null): { file_name: string, type: string } {
+	const state = file_num ?? getRandomInt(0, 5)
 	switch (state) {
 		case 0:
 			return { file_name: "/mnt/md0/work_station/content_for_system/ITDrama/prod_vids/single_vid_plus_reddit/sho3kd-P2001.mp4", type: "Bad" }
@@ -103,17 +130,53 @@ function select_vid(): { file_name: string, type: string } {
 	return { file_name: "", type: "null" }
 }
 
+const uploadSelectedVidsReturnCustomRes = async () => {
+	let file_arr: object[] = []
+	for (let i = 0; i < 7; i++) {
+		const selectChosenVid = select_vid_thinkpad(i)
+		let uploadResponse = await uploadFile(selectChosenVid.file_name)
+		await checkFileState(uploadResponse.file.name)
+		uploadResponse.file["type"] = selectChosenVid.type
+		file_arr.push(uploadResponse)
+	}
+	return file_arr
+}
+
+const createUploadList = async () => {
+	return (await listUploadedFiles()).files
+}
+
+const selectRandomUpload = async (fileArr: any[]) => {
+	return fileArr[getRandomInt(0, fileArr.length - 1)]
+}
+
+const uploadAndReturnRes = async () => {
+	const file = select_vid()
+	const uploadResponse = await uploadFile(file.file_name)
+	await checkFileState(uploadResponse.file.name)
+
+	return uploadResponse
+}
+
+const paramForBadVideo = `
+1) If there appears to be a video intro, for example theres one video that transitions into the main content, excluding overlayed text.
+2) If the video does not show people (fictional or non-fictional) or has many still frames exluding text.
+3) If a you-tube looking pop-up appears.
+4) If any of the audio is to extreme, i.e: The talk of death.
+`
+
 export async function main(input: { filePath?: string, invalidParam?: string } = { filePath: "test.mp4", invalidParam: paramForBadVideo }) {
 	let res_arr: object[] = []
 	let correct_count = 0
 	let incorrect_count = 0
 	let test_count = 100
+	let uploadedFileArr = await uploadSelectedVidsReturnCustomRes()
 	for (let i = 0; i < test_count; i++) {
-		const file = select_vid()
+		const file = await selectRandomUpload(uploadedFileArr)
 		const invalidParam = input.invalidParam ?? paramForBadVideo;
-		const uploadResponse = await uploadFile(file.file_name)
-		await checkFileState(uploadResponse.file.name)
-		const evalRes = (await evalVideo(uploadResponse, invalidParam)).trim()
+		const evalRes = (await evalVideo(file, invalidParam)).trim()
+
+
 		if (evalRes == "true") {
 			if (file.type == "Good") {
 				correct_count++
@@ -136,6 +199,9 @@ export async function main(input: { filePath?: string, invalidParam?: string } =
 	console.log(`Accuracy: ${correct_count / test_count}`)
 }
 main()
-
-
+/*
+(async function() {
+	console.log(await uploadSelectedVidsReturnCustomRes())
+}())
+*/
 
